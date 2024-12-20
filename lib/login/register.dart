@@ -1,34 +1,16 @@
+// ignore_for_file: unused_element
+
+import 'dart:convert';
+import 'package:bagong/endpoint/endpoints.dart';
+import 'package:bagong/login/login.dart';
+import 'package:bagong/utilities/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget{
   // const RegisterPage({super.key});
   @override
   _RegisterState createState() => _RegisterState();
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: const Text("Register"),
-  //     ),
-  //     body: Center(
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           const Text(
-  //             "Register page",
-  //             style: TextStyle(fontSize: 20),
-  //           ),
-  //           ElevatedButton(
-  //             onPressed: (){
-  //               Navigator.pop(context);
-  //             }, 
-  //             child: const Text("back to login"),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }
 
 class _RegisterState extends State<RegisterPage>{
@@ -36,7 +18,9 @@ class _RegisterState extends State<RegisterPage>{
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool isLoading=true;
 
   void _register(){
     if(_formKey.currentState?.validate() ?? false){
@@ -49,6 +33,63 @@ class _RegisterState extends State<RegisterPage>{
 
     }
   }
+
+  
+  Future<void> _registerAPI() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      isLoading=true;
+    });
+
+    Object register = {
+      "name": _usernameController.text,
+      "email": _emailController.text,
+      "no_telepon": _phoneController.text,
+      "password" : _passwordController.text,
+    };
+    print(register);
+    try{
+      final response = await http.post(
+        Uri.parse(Endpoints.register),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(register)
+      );
+      print(response.body);
+      if(!mounted) return;
+      if(response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print(data);
+        if (data['success']) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => LoginObjPage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(data['message'] ?? 'Register failed')),
+          );
+        }
+      }
+      else{
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Server error: ${response.statusCode}')),
+        );
+      }
+    }
+    catch(e){
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Network Error: $e"))
+      );
+
+    }finally{
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   void _backLogin(){
     Navigator.pop(context);
   }
@@ -73,12 +114,7 @@ class _RegisterState extends State<RegisterPage>{
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.email)
                 ),
-                validator: (value) {
-                  if(value==null||value.isEmpty){
-                    return "email empty";
-                  }
-                  return null;
-                },
+                validator: Validators.validateEmail,
               ),
               SizedBox(height: 16.0,),
               TextFormField(
@@ -88,12 +124,18 @@ class _RegisterState extends State<RegisterPage>{
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.person)
                 ),
-                validator: (value) {
-                  if(value==null||value.isEmpty){
-                    return "user empty";
-                  }
-                  return null;
-                },
+                validator: Validators.validateName,
+              ),
+              SizedBox(height: 16.0,),
+              TextFormField(
+                controller: _phoneController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Phone",
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.phone)
+                ),
+                validator: Validators.validatePhone,
               ),
               SizedBox(height: 16.0,),
               TextFormField(
@@ -104,17 +146,12 @@ class _RegisterState extends State<RegisterPage>{
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.lock)
                 ),
-                validator: (value) {
-                  if(value==null||value.isEmpty){
-                    return "password empty";
-                  }
-                  return null;
-                },
+                validator: Validators.validatePass,
               ),
               SizedBox(height: 16.0,),
 
               ElevatedButton(
-                onPressed: _register,
+                onPressed: _registerAPI,
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),
                   textStyle: TextStyle(fontSize: 18),
