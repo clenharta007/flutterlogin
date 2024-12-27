@@ -4,8 +4,8 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Email is required';
     }
-    final max=255;
-    if(value.length>max){
+    final max = 255;
+    if (value.length > max) {
       return 'Must not exceed $max characters';
     }
     // Basic email pattern validation
@@ -19,8 +19,8 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Phone number is required';
     }
-    final max=15;
-    if(value.length>max){
+    final max = 15;
+    if (value.length > max) {
       return 'Must not exceed $max characters';
     }
     // Allow only digits with length between 10 and 15
@@ -35,20 +35,20 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'username is required';
     }
-    final max=255;
-    if(value.length>max){
+    final max = 255;
+    if (value.length > max) {
       return 'Must not exceed $max characters';
     }
     return null;
   }
-  
+
   static String? validatePass(String? value) {
     if (value == null || value.isEmpty) {
       return 'username is required';
     }
-    final min=8;
-    if(value.length<min){
-       return 'Must be at least $min characters';
+    final min = 8;
+    if (value.length < min) {
+      return 'Must be at least $min characters';
     }
     return null;
   }

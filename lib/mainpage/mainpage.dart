@@ -6,14 +6,14 @@ class MainPage extends StatefulWidget {
   _MainState createState() => _MainState();
 }
 
-class _MainState extends State<MainPage>{
+class _MainState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Main Page'),
         actions: [
-          PopupMenuButton <String>(
+          PopupMenuButton<String>(
             onSelected: (value) {
               if (value == "logout") {
                 // Navigate back to Login Page
