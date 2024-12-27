@@ -1,10 +1,11 @@
-// ignore_for_file: unused_import
+// ignore_for_file: unused_import, unused_element
 
 import 'dart:convert';
 import 'dart:io';
 import 'package:bagong/Login/register.dart';
 import 'package:bagong/endpoint/endpoints.dart';
 import 'package:bagong/mainpage/mainpage.dart';
+import 'package:bagong/utilities/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -47,49 +48,49 @@ class _LoginPageState extends State<LoginObjPage>{
   }
   // #endregion
 
-  // Future<void> _LoginAPI() async {
-  //   if (!_formKey.currentState!.validate()) return;
-  //
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //
-  //   Object login= {
-  //     "username" : _usernameController.text,
-  //     "password" : _passwordController.text
-  //   };
-  //
-  //   try{
-  //     final response = await http.post(
-  //       Uri.parse(Endpoints.login),
-  //       headers: {'Content-Type': 'application/json'},
-  //       body: jsonEncode(login)
-  //     );
-  //
-  //     if(response.statusCode == 200) {
-  //       final data = jsonDecode(response.body);
-  //       if (data['success']) {
-  //         Navigator.pushReplacement(
-  //           context,
-  //           MaterialPageRoute(builder: (context) => MainPage()),
-  //         );
-  //       } else {
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(content: Text(data['message'] ?? 'Login failed')),
-  //         );
-  //       }
-  //     }
-  //     else{
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Server error: ${response.statusCode}')),
-  //       );
-  //     }
-  //   }catch(e){
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Network error: $e')),
-  //     );
-  //   }
-  // }
+  Future<void> _loginAPI() async {
+    if (!_formKey.currentState!.validate()) return;
+  
+    setState(() {
+      isLoading = true;
+    });
+  
+    Object login= {
+      "email" : _usernameController.text,
+      "password" : _passwordController.text
+    };
+  
+    try{
+      final response = await http.post(
+        Uri.parse(Endpoints.login),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(login)
+      );
+      if(!mounted) return;
+      if(response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success']) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MainPage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(data['message'] ?? 'Login failed')),
+          );
+        }
+      }
+      else{
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Server error: ${response.statusCode}')),
+        );
+      }
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Network error: $e')),
+      );
+    }
+  }
 
   //Method redirect page
   void _toRegister(){
@@ -117,32 +118,22 @@ class _LoginPageState extends State<LoginObjPage>{
               TextFormField(
                 controller: _usernameController,
                 decoration: InputDecoration(
-                  labelText: "username",
+                  labelText: "Email",
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.person)
                 ),
-                validator: (value) {
-                  if(value==null||value.isEmpty){
-                    return "user empty";
-                  }
-                  return null;
-                },
+                validator: Validators.validateEmail,
               ),
               SizedBox(height: 16.0,),
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: "password",
+                  labelText: "Password",
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.lock)
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'password empty';
-                  }
-                  return null;
-                },
+                validator: Validators.validatePass,
               ),
               SizedBox(height: 24.0,),
               

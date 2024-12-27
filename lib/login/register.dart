@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 import 'package:bagong/endpoint/endpoints.dart';
-import 'package:bagong/login/login.dart';
+import 'package:bagong/login/verify_token.dart';
 import 'package:bagong/utilities/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -61,9 +61,10 @@ class _RegisterState extends State<RegisterPage>{
         final data = jsonDecode(response.body);
         print(data);
         if (data['success']) {
+        // if (true) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => LoginObjPage()),
+            MaterialPageRoute(builder: (context) => VerifyTokenPage(email: _emailController.text)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -75,6 +76,10 @@ class _RegisterState extends State<RegisterPage>{
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Server error: ${response.statusCode}')),
         );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => VerifyTokenPage(email: _emailController.text)),
+        // );
       }
     }
     catch(e){
