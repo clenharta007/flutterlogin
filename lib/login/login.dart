@@ -33,12 +33,34 @@ class _LoginPageState extends State<LoginObjPage> {
         isLoading = true;
       });
 
-      await Future.delayed(Duration(seconds: 5));
+      Map<String, dynamic> l = {
+        "name": _usernameController.text,
+        "password": _passwordController.text,
+      };
+      
+
+      Map<String, dynamic> loginC = {
+        "name": "a@a.a",
+        "password": "12345678",
+      };
+      
+
+      if ((l["name"] == loginC["name"]) &&
+          (l["password"] == loginC["password"])) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Logged in successfully')));
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Logged in failed')));
+      }
+
+      // await Future.delayed(Duration(seconds: 5));
       // Navigate to another page or show success message
       // For now, we just clear the fields
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Logged in successfully')));
+
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text('Logged in successfully')));
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => MainPage()));
     }
