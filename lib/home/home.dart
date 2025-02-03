@@ -6,12 +6,16 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-  //var declaration
+  // #region var declaration
+  //final PageController _pageController = PageController(initialPage: 0); // Start in the middle
+  late PageController _pageController;
+  final initialPage = 1000;
   double balance = 77851.0; // Initial balance
   int points = 2000; // Initial points
   int _selectedTabIndex = 0;
+  // #endregion
 
-  //obj declaration
+  //#region obj declaration
   final List<String> _tabs = [
     'Favorit',
     'Pilihan Lain',
@@ -47,7 +51,14 @@ class _Home extends State<Home> {
     ],
   };
 
-  //func declaration
+  final List<String> textItems = [
+    "Slide 2: Welcome to the Carousel!",
+    "Slide 1: Swipe to navigate.",
+    "Slide 3: Enjoy creating in Flutter!",
+  ];
+  // #endregion
+
+  // #region func declaration
   void _onTabSelected(int index) {
     setState(() {
       _selectedTabIndex = index;
@@ -67,11 +78,31 @@ class _Home extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: 1000); // Start in the middle
+
+    // Jump to the first item after the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _pageController
+          .jumpToPage(1000); // Make sure it starts at the "first" logical item
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+  // #endregion
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
         body: Column(
           children: [
+            // #region wallet box
             Padding(
               padding: EdgeInsets.all(16),
               child: Container(
@@ -236,8 +267,9 @@ class _Home extends State<Home> {
                 ),
               ),
             ),
+            // #endregion
 
-            ///another
+            // #region tab menu
             Padding(
               padding: EdgeInsets.all(8),
               child: Row(
@@ -267,13 +299,90 @@ class _Home extends State<Home> {
                         ))),
               ),
             ),
-            //menu
-            Expanded(child: MenuGrid(menuItems: _menuItems[_selectedTabIndex]!))
+            // #endregion
+
+            // #region menu items
+            Expanded(
+                child: MenuGrid(menuItems: _menuItems[_selectedTabIndex]!)),
+            // #endregion
+
+            // #region carousel
+            Expanded(
+                child: PageView.builder(
+                    controller: _pageController,
+                    // itemCount: textItems.length,
+                    // onPageChanged: (index) {
+                    //   setState(() {
+                    //     _currPage = index;
+                    //   });
+                    // },
+                    itemBuilder: (context, index) {
+                      // Use modulo to calculate the actual index
+                      final actualIndex = index % textItems.length;
+                      return Center(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 50),
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.blueAccent,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 5)),
+                            ],
+                          ),
+                          child: Text(
+                            textItems[actualIndex],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      );
+                    })),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(textItems.length, (index) {
+                  return AnimatedBuilder(
+                      animation: _pageController,
+                      builder: (context, child) {
+                        double page =
+                            _pageController.page ?? initialPage.toDouble();
+                        final currPage =
+                            (page - initialPage) % textItems.length;
+
+                        return AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          margin: EdgeInsets.symmetric(horizontal: 4),
+                          height: 10,
+                          width: (currPage.round() == index) ? 20 : 10,
+                          decoration: BoxDecoration(
+                            color: (currPage.round() == index)
+                                ? Colors.blue
+                                : Colors.grey,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        );
+                      });
+                })),
+            SizedBox(
+              height: 20,
+            ),
+            // #endregion
           ],
         ));
   }
 }
 
+// #region menu items related
 class MenuGrid extends StatelessWidget {
   final List<MenuItem> menuItems;
 
@@ -327,3 +436,4 @@ class MenuItemWidget extends StatelessWidget {
     );
   }
 }
+// #endregion

@@ -1,4 +1,7 @@
+// ignore_for_file: unused_import
+
 import 'package:bagong/home/home.dart';
+import 'package:bagong/home/home_alt.dart';
 import 'package:bagong/library/library.dart';
 import 'package:bagong/login/login.dart';
 import 'package:bagong/profile/profile.dart';
@@ -13,7 +16,7 @@ class MainPage extends StatefulWidget {
 class _MainState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
-  final List<Widget> _pages = [Home(), Search(), Library(), Profile()];
+  final List<Widget> _pages = [HomeAlt(), Search(), Library(), Profile()];
 
   @override
   Widget build(BuildContext context) {
@@ -125,17 +128,17 @@ class _MainState extends State<MainPage> {
           },
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: "Home",
-                ),
+              icon: Icon(Icons.home),
+              label: "Home",
+            ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: "Search",
-),
+              icon: Icon(Icons.search),
+              label: "Search",
+            ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.library_books),
-                label: "Library",
-                ),
+              icon: Icon(Icons.library_books),
+              label: "Library",
+            ),
             BottomNavigationBarItem(
                 icon: Icon(Icons.person),
                 label: "Profile",
