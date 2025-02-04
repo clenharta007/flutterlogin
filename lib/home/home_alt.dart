@@ -1,7 +1,9 @@
 // ignore_for_file: unnecessary_breaks
 
+import 'package:bagong/error/page404.dart';
 import 'package:bagong/favorit/pinjaman/pinjaman.dart';
 import 'package:bagong/favorit/uang_elektronik/uang_elektronik.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class HomeAlt extends StatefulWidget {
@@ -51,6 +53,12 @@ class _HomeAlt extends State<HomeAlt> {
     ],
   };
 
+  final List<String> textItems = [
+    "Slide 1: Swipe to navigate.",
+    "Slide 2: Welcome to the Carousel!",
+    "Slide 3: Enjoy creating in Flutter!",
+  ];
+
   void _onTabSelected(int index) {
     setState(() {
       _selectedTabIndex = index;
@@ -80,9 +88,7 @@ class _HomeAlt extends State<HomeAlt> {
         page = UangElektronik();
         break;
       default:
-        page = Scaffold(
-          body: Center(child: Text('Page for $label is under development')),
-        );
+        page = Page404();
     }
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
@@ -340,17 +346,36 @@ class _HomeAlt extends State<HomeAlt> {
                       );
                     }),
               ),
+              // #region carousel slider
+              CarouselSlider(
+                options: CarouselOptions(
+                    height: 200,
+                    enlargeCenterPage: true,
+                    autoPlay: true,
+                    autoPlayInterval: Duration(seconds: 5),
+                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                    autoPlayCurve: Curves.easeInOut,
+                    aspectRatio: 16 / 9,
+                    enableInfiniteScroll: true),
+                items: textItems.map((item) {
+                  return Container(
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Colors.purpleAccent,
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Center(
+                      child: Text(
+                        item,
+                        style: TextStyle(color: Colors.white, fontSize: 24),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              // #endregion
               Container(
                   height: 200,
                   color: Colors.green,
-                  child: Center(child: Text('Red Box'))),
-              Container(
-                  height: 200,
-                  color: Colors.orange,
-                  child: Center(child: Text('Red Box'))),
-              Container(
-                  height: 200,
-                  color: Colors.orange,
                   child: Center(child: Text('Red Box'))),
               Container(
                   height: 200,

@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 
+import 'package:bagong/error/page404.dart';
 import 'package:bagong/home/home.dart';
 import 'package:bagong/home/home_alt.dart';
 import 'package:bagong/library/library.dart';
@@ -18,6 +19,30 @@ class _MainState extends State<MainPage> {
   int _currentIndex = 0;
   final List<Widget> _pages = [HomeAlt(), Search(), Library(), Profile()];
 
+  void selectTopRight(String value) {
+    Widget page;
+    if (value == "logout") {
+      // Navigate back to Login Page
+      page = LoginObjPage();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => page),
+      );
+    } else if (value == "profile") {
+      page = Page404();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => page),
+      );
+    } else {
+      page = Page404();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => page),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,15 +57,7 @@ class _MainState extends State<MainPage> {
               icon: Icon(Icons.menu)),
           actions: [
             PopupMenuButton<String>(
-              onSelected: (value) {
-                if (value == "logout") {
-                  // Navigate back to Login Page
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginObjPage()),
-                  );
-                }
-              },
+              onSelected: (value) => selectTopRight(value),
               icon: Icon(Icons.more_vert),
               itemBuilder: (context) => [
                 PopupMenuItem(
@@ -83,7 +100,8 @@ class _MainState extends State<MainPage> {
                 title: Text('Home'),
                 onTap: () {
                   // Handle navigation or action
-                  Navigator.pop(context); // Close the drawer
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => MainPage()));
                 },
               ),
               ListTile(
@@ -91,7 +109,8 @@ class _MainState extends State<MainPage> {
                 title: Text('Settings'),
                 onTap: () {
                   // Handle navigation or action
-                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Page404()));
                 },
               ),
               Spacer(),
@@ -100,6 +119,10 @@ class _MainState extends State<MainPage> {
                 title: Text('Logout'),
                 onTap: () {
                   // Handle logout
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginObjPage()),
+                  );
                 },
               )
             ],
