@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Validators {
   static String? validateEmail(String? value) {
     final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
@@ -51,5 +53,20 @@ class Validators {
       return 'Must be at least $min characters';
     }
     return null;
+  }
+
+  static IconData mapIcon(String iconName) {
+    switch (iconName) {
+      case "home":
+        return Icons.home;
+      case "star":
+        return Icons.star;
+      case "settings":
+        return Icons.settings;
+      case "person":
+        return Icons.person;
+      default:
+        return Icons.help; // Default icon for unknown names
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bagong/utilities/object.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -405,12 +406,7 @@ class MenuGrid extends StatelessWidget {
   }
 }
 
-class MenuItem {
-  final IconData icon;
-  final String label;
 
-  MenuItem({required this.icon, required this.label});
-}
 
 class MenuItemWidget extends StatelessWidget {
   final MenuItem menuItem;

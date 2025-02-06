@@ -1,0 +1,26 @@
+[
+    {
+        "icon": "home",
+        "label":"Home"
+    },
+    {
+        "icon": "person",
+        "label":"Profile"
+    },
+    {
+        "icon": "settings",
+        "label":"Settings"
+    },
+    {
+        "icon": "notifications",
+        "label":"Notifications"
+    },
+    {
+        "icon": "shopping_cart",
+        "label":"Cart"
+    },
+    {
+        "icon": "help",
+        "label":"Help"
+    }
+]

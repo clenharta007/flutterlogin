@@ -1,3 +1,4 @@
+import 'package:bagong/utilities/object.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart' hide CarouselController;
 
@@ -413,11 +414,4 @@ class _Library extends State<Library> {
       ),
     ));
   }
-}
-
-class MenuItem {
-  final IconData icon;
-  final String label;
-
-  MenuItem({required this.icon, required this.label});
 }

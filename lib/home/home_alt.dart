@@ -3,6 +3,7 @@
 import 'package:bagong/error/page404.dart';
 import 'package:bagong/favorit/pinjaman/pinjaman.dart';
 import 'package:bagong/favorit/uang_elektronik/uang_elektronik.dart';
+import 'package:bagong/utilities/object.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
@@ -154,6 +155,7 @@ class _HomeAlt extends State<HomeAlt> {
                             child: IconButton(
                                 onPressed: () {
                                   addToBalance(5000);
+                                  
                                 },
                                 icon: Icon(
                                   Icons.add_circle,
@@ -400,9 +402,3 @@ class _HomeAlt extends State<HomeAlt> {
 //   ),
 //   ),
 
-class MenuItem {
-  final IconData icon;
-  final String label;
-
-  MenuItem({required this.icon, required this.label});
-}
