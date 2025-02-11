@@ -14,7 +14,7 @@ class _UangElektronik extends State<UangElektronik> {
   bool isTap = false;
   List<Map<String, dynamic>> menu = [];
 
-  // Define menu items
+  // #region Define menu items manually
   // final List<Map<String, dynamic>> menuItems = [
   //   {'icon': Icons.home, 'label': 'Home'},
   //   {'icon': Icons.person, 'label': 'Profile'},
@@ -23,13 +23,12 @@ class _UangElektronik extends State<UangElektronik> {
   //   {'icon': Icons.shopping_cart, 'label': 'Cart'},
   //   {'icon': Icons.help, 'label': 'Help'},
   // ];
+  // #endregion
 
   Future<void> loadMenuItems() async {
     final String response =
         await rootBundle.loadString('assets/json/uangelektronikmenu.json');
     final List<dynamic> data = jsonDecode(response);
-
-    
 
     setState(() {
       menu = data.map((item) {

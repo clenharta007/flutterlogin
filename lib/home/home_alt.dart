@@ -1,8 +1,8 @@
 // ignore_for_file: unnecessary_breaks
-
 import 'package:bagong/error/page404.dart';
 import 'package:bagong/favorit/pinjaman/pinjaman.dart';
 import 'package:bagong/favorit/uang_elektronik/uang_elektronik.dart';
+import 'package:bagong/home/constants/menu.dart';
 import 'package:bagong/utilities/object.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -12,53 +12,22 @@ class HomeAlt extends StatefulWidget {
   _HomeAlt createState() => _HomeAlt();
 }
 
+enum SingingCharacter { lafayette, jefferson }
+
 class _HomeAlt extends State<HomeAlt> {
   // late PageController _pageController;
+  List<Map<int, List<MenuItem>>> item = [];
+  SingingCharacter? _character = SingingCharacter.lafayette;
+  List<dynamic> tab = [];
   final initialPage = 1000;
   double balance = 77851.0; // Initial balance
   int points = 2000; // Initial points
   int _selectedTabIndex = 0;
 
-  final List<String> tabs = [
-    'Favorit',
-    'Pilihan Lain',
-    'Grab',
-    'Finansial',
-  ];
+  final List<String> tabs = Menu().tabs;
+  final Map<int, List<MenuItem>> _menuItems = Menu().menuItems;
 
-  final Map<int, List<MenuItem>> _menuItems = {
-    0: [
-      MenuItem(icon: Icons.money, label: 'Pinjaman'),
-      MenuItem(icon: Icons.account_balance_wallet, label: 'Uang Elektronik'),
-      MenuItem(icon: Icons.payment, label: 'Angsuran Kredit'),
-      MenuItem(icon: Icons.phone_android, label: 'Pulsa/Paket Data'),
-      MenuItem(icon: Icons.play_arrow, label: 'Film'),
-    ],
-    1: [
-      MenuItem(icon: Icons.flash_on, label: 'PLN'),
-      MenuItem(icon: Icons.water_drop, label: 'Air PDAM'),
-      MenuItem(icon: Icons.tv, label: 'Internet & TV Kabel'),
-      MenuItem(icon: Icons.health_and_safety, label: 'BPJS Kesehatan'),
-    ],
-    2: [
-      MenuItem(icon: Icons.local_taxi, label: 'Transportasi'),
-      MenuItem(icon: Icons.delivery_dining, label: 'Makanan'),
-      MenuItem(icon: Icons.shopping_cart, label: 'Belanja'),
-      MenuItem(icon: Icons.local_gas_station, label: 'BBM'),
-    ],
-    3: [
-      MenuItem(icon: Icons.savings, label: 'Tabungan'),
-      MenuItem(icon: Icons.attach_money, label: 'Investasi'),
-      MenuItem(icon: Icons.account_balance, label: 'Asuransi'),
-      MenuItem(icon: Icons.credit_card, label: 'Kartu Kredit'),
-    ],
-  };
-
-  final List<String> textItems = [
-    "Slide 1: Swipe to navigate.",
-    "Slide 2: Welcome to the Carousel!",
-    "Slide 3: Enjoy creating in Flutter!",
-  ];
+  final List<Map<String, dynamic>> textItems = Menu().carousel;
 
   void _onTabSelected(int index) {
     setState(() {
@@ -69,6 +38,13 @@ class _HomeAlt extends State<HomeAlt> {
   void addToBalance(double amount) {
     setState(() {
       balance += amount;
+    });
+  }
+
+  void reduceBalance(double amount) {
+    setState(() {
+      balance -= amount;
+      points += ((amount / 1000) / 2).floor();
     });
   }
 
@@ -155,7 +131,6 @@ class _HomeAlt extends State<HomeAlt> {
                             child: IconButton(
                                 onPressed: () {
                                   addToBalance(5000);
-                                  
                                 },
                                 icon: Icon(
                                   Icons.add_circle,
@@ -178,7 +153,7 @@ class _HomeAlt extends State<HomeAlt> {
                             radius: 30,
                             child: IconButton(
                                 onPressed: () {
-                                  // addToBalance(5000);
+                                  reduceBalance(5000);
                                 },
                                 icon: Icon(
                                   Icons.send,
@@ -201,7 +176,7 @@ class _HomeAlt extends State<HomeAlt> {
                             radius: 30,
                             child: IconButton(
                                 onPressed: () {
-                                  // addToBalance(5000);
+                                  reduceBalance(5000);
                                 },
                                 icon: Icon(
                                   Icons.download,
@@ -360,16 +335,43 @@ class _HomeAlt extends State<HomeAlt> {
                     aspectRatio: 16 / 9,
                     enableInfiniteScroll: true),
                 items: textItems.map((item) {
-                  return Container(
-                    margin: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.purpleAccent,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Center(
-                      child: Text(
-                        item,
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  item['route'] ?? Page404()));
+                    },
+                    child: Stack(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            image: DecorationImage(
+                              image: AssetImage(
+                                  item['image'] ?? "assets/img/noimage.jpg"),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              // color: Colors.purpleAccent,
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Center(
+                            child: Text(
+                              item['text'] ?? "No Title",
+                              style: TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   );
                 }).toList(),
@@ -378,7 +380,28 @@ class _HomeAlt extends State<HomeAlt> {
               Container(
                   height: 200,
                   color: Colors.green,
-                  child: Center(child: Text('Red Box'))),
+                  child: Column(children: <Widget>[
+                    RadioListTile<SingingCharacter>(
+                      title: const Text('Lafayette'),
+                      value: SingingCharacter.lafayette,
+                      groupValue: _character,
+                      onChanged: (SingingCharacter? value) {
+                        setState(() {
+                          _character = value;
+                        });
+                      },
+                    ),
+                    RadioListTile<SingingCharacter>(
+                      title: const Text('Thomas Jefferson'),
+                      value: SingingCharacter.jefferson,
+                      groupValue: _character,
+                      onChanged: (SingingCharacter? value) {
+                        setState(() {
+                          _character = value;
+                        });
+                      },
+                    ),
+                  ])),
               Container(
                   height: 200,
                   color: Colors.orange,
@@ -401,4 +424,3 @@ class _HomeAlt extends State<HomeAlt> {
 //     title: Text("Item $index"),
 //   ),
 //   ),
-
