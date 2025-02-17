@@ -7,6 +7,7 @@ import 'package:bagong/endpoint/endpoints.dart';
 import 'package:bagong/mainpage/mainpage.dart';
 import 'package:bagong/utilities/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 class LoginObjPage extends StatefulWidget {
@@ -19,7 +20,24 @@ class _LoginPageState extends State<LoginObjPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  List<Map<String, dynamic>> acc = [];
   bool isLoading = false;
+
+  Future<void> loadAcc() async {
+    final String response =
+        await rootBundle.loadString('assets/json/random_user_data.json');
+    final List<dynamic> data = jsonDecode(response);
+
+    setState(() {
+      acc = data.map((item) {
+        return {
+          "email": item["email"],
+          "username": item["username"],
+          "password": item["password"]
+        };
+      }).toList();
+    });
+  }
 
   // Method to handle login
   // #region reg
@@ -37,18 +55,25 @@ class _LoginPageState extends State<LoginObjPage> {
         "name": _usernameController.text,
         "password": _passwordController.text,
       };
-      
 
-      Map<String, dynamic> loginC = {
-        "name": "a@a.a",
-        "password": "12345678",
-      };
-      
+      // Map<String, dynamic> loginC = {
+      //   "name": "a@a.a",
+      //   "password": "12345678",
+      // };
 
-      if ((l["name"] == loginC["name"]) &&
-          (l["password"] == loginC["password"])) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Logged in successfully')));
+      bool isMatch = acc.any((user) =>
+          user['email'] == l["name"] && user['password'] == l["password"]);
+      String? name = acc
+          .where((user) =>
+              user['email'] == l["name"] && user['password'] == l["password"])
+          .map((e) => e["username"] as String)
+          .firstOrNull;
+
+      if (isMatch) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Logged in successfully. Welcome $name')));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => MainPage(user: name)));
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Logged in failed')));
@@ -61,8 +86,8 @@ class _LoginPageState extends State<LoginObjPage> {
 
       // ScaffoldMessenger.of(context)
       //     .showSnackBar(SnackBar(content: Text('Logged in successfully')));
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => MainPage()));
+      // Navigator.pushReplacement(
+      //     context, MaterialPageRoute(builder: (context) => MainPage()));
     }
   }
   // #endregion
@@ -89,7 +114,10 @@ class _LoginPageState extends State<LoginObjPage> {
         if (data['success']) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => MainPage()),
+            MaterialPageRoute(
+                builder: (context) => MainPage(
+                      user: "name",
+                    )),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -114,6 +142,12 @@ class _LoginPageState extends State<LoginObjPage> {
       context,
       MaterialPageRoute(builder: (context) => RegisterPage()),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadAcc();
   }
 
   @override

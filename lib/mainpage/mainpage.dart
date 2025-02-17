@@ -10,6 +10,10 @@ import 'package:bagong/search/search.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
+  final String? user;
+
+  MainPage({required this.user});
+
   @override
   _MainState createState() => _MainState();
 }
@@ -17,7 +21,24 @@ class MainPage extends StatefulWidget {
 class _MainState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
-  final List<Widget> _pages = [HomeAlt(), Search(), Library(), Profile()];
+  late String? ur = "";
+  // final List<Widget> _pages = [HomeAlt(), Search(), Library(), Profile()];
+
+  Widget paging(var index) {
+    String? u = ur;
+    switch (index) {
+      case 0:
+        return HomeAlt(user: u);
+      case 1:
+        return Search();
+      case 2:
+        return Library();
+      case 3:
+        return Profile();
+      default:
+        return Page404();
+    }
+  }
 
   void selectTopRight(String value) {
     Widget page;
@@ -41,6 +62,12 @@ class _MainState extends State<MainPage> {
         MaterialPageRoute(builder: (context) => page),
       );
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    ur = widget.user;
   }
 
   @override
@@ -100,8 +127,12 @@ class _MainState extends State<MainPage> {
                 title: Text('Home'),
                 onTap: () {
                   // Handle navigation or action
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => MainPage()));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MainPage(
+                                user: widget.user,
+                              )));
                 },
               ),
               ListTile(
@@ -128,7 +159,8 @@ class _MainState extends State<MainPage> {
             ],
           ),
         ),
-        body: _pages[_currentIndex],
+        body: paging(_currentIndex),
+        //_pages[_currentIndex],
         // #region
         // Center(
         //   child: Text(

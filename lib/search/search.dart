@@ -13,11 +13,11 @@ class _Search extends State<Search> {
   TextEditingController search = TextEditingController();
   TextEditingController datec = TextEditingController();
 
-  String _selectedOption = "Option 1";
+  String _selectedOption = "asc";
   List<Map<String, dynamic>> data = [];
   List<Map<String, dynamic>> sr = [];
 
-  DateTime? date;
+  DateTime? startdate;
 
   Future<void> loadData() async {
     final String response =
@@ -47,7 +47,7 @@ class _Search extends State<Search> {
     if (pickedDate != null) {
       setState(() {
         datec.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-        date = pickedDate;
+        startdate = pickedDate;
       });
     }
   }
@@ -55,7 +55,7 @@ class _Search extends State<Search> {
   void _exitModal() {
     var t = datec.text;
     print("Selected Date: $t");
-    print("Selected Date: $date");
+    print("Selected Date: $startdate");
 
     Navigator.pop(context);
   }
@@ -99,7 +99,7 @@ class _Search extends State<Search> {
                               Row(
                                 children: [
                                   Radio<String>(
-                                    value: 'Option 1',
+                                    value: 'asc',
                                     groupValue: _selectedOption,
                                     onChanged: (String? value) {
                                       setState(() {
@@ -107,13 +107,13 @@ class _Search extends State<Search> {
                                       });
                                     },
                                   ),
-                                  Text('Option 1'),
+                                  Text('Asc'),
                                 ],
                               ),
                               Row(
                                 children: [
                                   Radio<String>(
-                                    value: 'Option 2',
+                                    value: 'desc',
                                     groupValue: _selectedOption,
                                     onChanged: (String? value) {
                                       setState(() {
@@ -121,7 +121,7 @@ class _Search extends State<Search> {
                                       });
                                     },
                                   ),
-                                  Text('Option 2'),
+                                  Text('Desc'),
                                 ],
                               ),
                             ],
@@ -142,24 +142,24 @@ class _Search extends State<Search> {
 
   void _performSearch() {
     String query = search.text;
-    var t = datec.text;
-    String? formattedDate =
-        date != null ? DateFormat('yyyy-MM-dd').format(date!) : null;
-
-    // Replace this with your search logic
-    print('Search Query: $query');
-    print('Selected Date: $t ');
-    print('Selected Date: $formattedDate');
+    // var t = datec.text;
+    // String? formattedDate =
+    //     startdate != null ? DateFormat('yyyy-MM-dd').format(startdate!) : null;
 
     setState(() {
-      if (query.isEmpty) {
+      if (query.isEmpty && startdate == null) {
         sr = data;
       } else {
         sr = data.where((e) {
-          return e["title"]
-              .toString()
-              .toLowerCase()
-              .contains(query.toLowerCase());
+          final title =
+              e["title"].toString().toLowerCase().contains(query.toLowerCase());
+
+          final date = DateTime.parse(e["date"]);
+
+          final startDateMatches =
+              date.isAfter(startdate!) || date.isAtSameMomentAs(startdate!);
+
+          return title && startDateMatches;
         }).toList();
       }
     });
@@ -238,30 +238,6 @@ class _Search extends State<Search> {
                           },
                         );
                       }))
-
-            // Center(
-            //     child: Column(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Icon(
-            //       Icons.check_circle,
-            //       size: 100,
-            //       color: Colors.green,
-            //     ),
-            //     SizedBox(
-            //       height: 10,
-            //     ),
-            //     Text(
-            //       "Data Found",
-            //       style: TextStyle(fontSize: 20, color: Colors.black),
-            //     ),
-            //     Text(
-            //       "",
-            //       style: TextStyle(fontSize: 17, color: Colors.black54),
-            //     ),
-            //   ],
-            // )),
-            // ElevatedButton(onPressed: _performSearch, child: Text("search")),
           ],
         ),
       ),

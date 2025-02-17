@@ -63,6 +63,7 @@ flutter:
   assets:
     - assets/json/uangelektronikmenu.json
     - assets/json/random_data_2000_2020.json
+    - assets/json/random_user_data.json
     - assets/img/gai.jpg
     - assets/img/mai.jpg
     - assets/img/pan.jpg

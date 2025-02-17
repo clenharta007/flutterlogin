@@ -8,16 +8,15 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class HomeAlt extends StatefulWidget {
+  final String? user;
+  HomeAlt({required this.user});
   @override
   _HomeAlt createState() => _HomeAlt();
 }
 
-enum SingingCharacter { lafayette, jefferson }
-
 class _HomeAlt extends State<HomeAlt> {
   // late PageController _pageController;
   List<Map<int, List<MenuItem>>> item = [];
-  SingingCharacter? _character = SingingCharacter.lafayette;
   List<dynamic> tab = [];
   final initialPage = 1000;
   double balance = 77851.0; // Initial balance
@@ -26,7 +25,6 @@ class _HomeAlt extends State<HomeAlt> {
 
   final List<String> tabs = Menu().tabs;
   final Map<int, List<MenuItem>> _menuItems = Menu().menuItems;
-
   final List<Map<String, dynamic>> textItems = Menu().carousel;
 
   void _onTabSelected(int index) {
@@ -76,6 +74,7 @@ class _HomeAlt extends State<HomeAlt> {
     return Scaffold(
       body: Column(
         children: [
+          Text("Welcome, ${widget.user}"),
           // #region wallet box
           Padding(
             padding: EdgeInsets.all(16),
@@ -380,28 +379,7 @@ class _HomeAlt extends State<HomeAlt> {
               Container(
                   height: 200,
                   color: Colors.green,
-                  child: Column(children: <Widget>[
-                    RadioListTile<SingingCharacter>(
-                      title: const Text('Lafayette'),
-                      value: SingingCharacter.lafayette,
-                      groupValue: _character,
-                      onChanged: (SingingCharacter? value) {
-                        setState(() {
-                          _character = value;
-                        });
-                      },
-                    ),
-                    RadioListTile<SingingCharacter>(
-                      title: const Text('Thomas Jefferson'),
-                      value: SingingCharacter.jefferson,
-                      groupValue: _character,
-                      onChanged: (SingingCharacter? value) {
-                        setState(() {
-                          _character = value;
-                        });
-                      },
-                    ),
-                  ])),
+                  child: Center(child: Text('Red Box'))),
               Container(
                   height: 200,
                   color: Colors.orange,
