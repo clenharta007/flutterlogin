@@ -74,7 +74,15 @@ class _HomeAlt extends State<HomeAlt> {
     return Scaffold(
       body: Column(
         children: [
-          Text("Welcome, ${widget.user}"),
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.only(left: 22, top: 8),
+            child: Text(
+              "Welcome, ${widget.user ?? " - "}!",
+              textAlign: TextAlign.left,
+            ),
+          ),
+
           // #region wallet box
           Padding(
             padding: EdgeInsets.all(16),

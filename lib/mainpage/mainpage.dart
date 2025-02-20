@@ -25,10 +25,10 @@ class _MainState extends State<MainPage> {
   // final List<Widget> _pages = [HomeAlt(), Search(), Library(), Profile()];
 
   Widget paging(var index) {
-    String? u = ur;
+    // String? u = ur;
     switch (index) {
       case 0:
-        return HomeAlt(user: u);
+        return HomeAlt(user: ur);
       case 1:
         return Search();
       case 2:
@@ -67,7 +67,7 @@ class _MainState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    ur = widget.user;
+    ur = widget.user ?? " - ";
   }
 
   @override
@@ -131,7 +131,7 @@ class _MainState extends State<MainPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => MainPage(
-                                user: widget.user,
+                                user: widget.user ?? " - ",
                               )));
                 },
               ),
